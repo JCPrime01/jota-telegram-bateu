@@ -43,7 +43,7 @@ async function dispararLead(e) {
   ttq.track('SubmitForm');
 
   try {
-    await fetch('https://track-jp-production.up.railway.app/api/lead', {
+    await fetch('https://track-telegram-production.up.railway.app/api/lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
