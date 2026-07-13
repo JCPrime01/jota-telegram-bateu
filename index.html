@@ -32,29 +32,24 @@ fbq('track', 'PageView');
 </script>
 
 <script>
-async function dispararLead(e) {
+function dispararLead(e) {
   e.preventDefault();
-  const eventId = 'cr_' + Date.now();
+  var dest = e.currentTarget.href;
+  var eventId = 'tg_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+  var fbp = document.cookie.match(/_fbp=([^;]+)/)?.[1] || null;
+  var fbc = document.cookie.match(/_fbc=([^;]+)/)?.[1] || null;
 
-  // Meta
-  fbq('track', 'CompleteRegistration', { currency: 'BRL', value: 0 }, { eventID: eventId });
+  fbq('track', 'CompleteRegistration', {}, { eventID: eventId });
+  if (typeof ttq !== 'undefined') ttq.track('SubmitForm');
 
-  // TikTok
-  ttq.track('SubmitForm');
+  fetch('https://track-telegram-production.up.railway.app/api/lead', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fbp: fbp, fbc: fbc, userAgent: navigator.userAgent, eventId: eventId, externalId: eventId }),
+    keepalive: true
+  }).catch(function(){});
 
-  try {
-    await fetch('https://track-telegram-production.up.railway.app/api/lead', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fbp: document.cookie.match(/_fbp=([^;]+)/)?.[1] || null,
-        fbc: document.cookie.match(/_fbc=([^;]+)/)?.[1] || null,
-        userAgent: navigator.userAgent,
-        eventId: eventId
-      })
-    });
-  } catch(err) {}
-  window.location.href = 'https://smartico-dash.up.railway.app/track/b215d5e4-a406-450d-bc5f-f9687470105e/redirect?utm_campaign=bateu';
+  window.location.href = dest;
 }
 </script>
 
